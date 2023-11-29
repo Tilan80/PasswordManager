@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive } from 'vue'
 import { CheckKey } from "../../wailsjs/go/main/App"
 
 
@@ -12,7 +12,6 @@ const data = reactive({
 
 async function checkKey() {
   try {
-    
     const result = CheckKey(data.name)
     data.resultText = result ? 'Key is correct' : 'Invalid key'
   } catch (error) {

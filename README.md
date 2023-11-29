@@ -1,13 +1,19 @@
 # PasswordManager
- Making a password manager with Go, MongoDB and Wails (using Vue) for a school project.
+
+A password manager built with Go, MongoDB, and Wails (using Vue) for a school project.
 
 ## Installation
- To get the project started locally, download the files, then make sure you have go and wails installed, if not then follow the installation guide:
- https://wails.io/docs/gettingstarted/installation
 
- When everything is installed and paths are set correctlly, run the command "wails dev".
+To run the project locally, follow these steps:
 
-## Error
- Currently the problem I have is with connecting backend and frontedn or rather how to use the backend functions in vue.
- If you open /frontend/src/components/Login.vue you will see, that I am trying to call a function CheckKey when a button is pressed.
- But wwhen trying it out there is an error that says it cannot read properties of undefiend "CheckKey"
+1. Download the project files.
+2. Ensure you have Go and Wails installed. If not, refer to the [installation guide](https://wails.io/docs/gettingstarted/installation).
+3. After installation, make sure your paths are set correctly.
+4. Run the command `wails dev`.
+
+## Issue
+
+I am currently facing an issue connecting the backend and frontend, specifically in using backend functions in Vue. The problem is highlighted in the `/frontend/src/components/Login.vue` file. I am attempting to call the `CheckKey` function when a button is pressed.
+
+However, I encounter an error that states: "Cannot read properties of undefined" at the line where I'm calling the `CheckKey` function. The full error message is as follows:
+Login.vue:18 Error calling CheckKey: TypeError: Cannot read properties of undefined (reading 'main')
