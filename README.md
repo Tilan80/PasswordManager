@@ -12,6 +12,15 @@ To run the project locally, follow these steps:
 4. Run the command `wails dev`.
 
 ## Issue
+Most of the important and "should change" code is in the files:
+  Frontend:
+  1. `/frontend/src/components/Login.vue`
+  2. `/frontend/src/App.vue`
+
+  Backend:
+  1. `main.go`
+  2. `app.go`
+  3. `dbmanage.go`
 
 I am currently facing an issue connecting the backend and frontend, specifically in using backend functions in Vue. The problem is highlighted in the `/frontend/src/components/Login.vue` file. I am attempting to call the `CheckKey` function when a button is pressed.
 
