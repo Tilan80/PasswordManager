@@ -1,4 +1,4 @@
-package main
+package pm
 
 import (
 	"crypto/aes"
@@ -7,11 +7,31 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"math/big"
 
 	"golang.org/x/crypto/argon2"
 )
 
 const key = "d27b92783f98d466484fc8ace1615e10"
+
+func GenPassword(len int) (string, error) {
+	characters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
+
+	password := make([]byte, len)
+	charLen := 92
+	for i := range password {
+		randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(charLen)))
+		if err != nil {
+			return "", err
+		}
+		password[i] = characters[randomIndex.Int64()]
+	}
+
+	securePassword := string(password)
+	fmt.Printf("Secure password: %s\n", securePassword)
+
+	return securePassword, nil
+}
 
 func Encrypt(text string) string {
 	block, _ := aes.NewCipher([]byte(key))

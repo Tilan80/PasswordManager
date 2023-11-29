@@ -1,116 +1,37 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"math/rand"
+	"embed"
+
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
-const uri = "mongodb://localhost:27017"
-const dbName = "PasswordManager"
-const collectionName = "Passwords"
-const keydb = "Key"
-
-type User struct {
-	ID       string `bson:"_id,omitempty"`
-	Platform string `bson:"platform"`
-	Username string `bson:"username"`
-	Password string `bson:"password"`
-}
+//go:embed all:frontend/dist
+var assets embed.FS
 
 func main() {
-	client, err := ConnectToMongoDB(uri)
+	// Create an instance of the app structure
+	app := NewApp()
+
+	// Create application with options
+	err := wails.Run(&options.App{
+		Title:  "myproject",
+		Width:  1024,
+		Height: 768,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.startup,
+		Bind: []interface{}{
+			app,
+			app.GetFrontendFunctions(), // Expose frontend functions
+		},
+	})
+
 	if err != nil {
-		panic(err)
+		println("Error:", err.Error())
 	}
-	defer func() {
-		if err := client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
-
-	var enteredKey string
-	fmt.Println("Enter the password:")
-	fmt.Scanln(&enteredKey)
-	//////////////////////
-	if CheckKey(DerivePassword(enteredKey), client, dbName, keydb) {
-		fmt.Println("Key is correct")
-		for {
-			var com string
-			fmt.Println("Enter the command:\nadd\naddOwn - to add with own password\nget - to get by platform\ngetAll" +
-				"\ndel - to delete\nex - to exit")
-			fmt.Scanln(&com)
-			//////////////////////////////
-			if com == "add" {
-				var plat, us, pass string
-				fmt.Println("Enter platform:")
-				fmt.Scanln(&plat)
-				fmt.Println("Enter username:")
-				fmt.Scanln(&us)
-				pass = Encrypt(GenPassword(20))
-				user := User{Platform: plat, Username: us, Password: pass}
-
-				err = InsertDocument(client, dbName, collectionName, user)
-				if err != nil {
-					fmt.Println("Error inserting document:", err)
-				} else {
-					fmt.Println("Document inserted successfully")
-				}
-				///////////////////////
-			} else if com == "addOwn" {
-				var plat, us, pass string
-				fmt.Println("Enter platform:")
-				fmt.Scanln(&plat)
-				fmt.Println("Enter username:")
-				fmt.Scanln(&us)
-				fmt.Println("Enter password:")
-				fmt.Scanln(&pass)
-				user := User{Platform: plat, Username: us, Password: Encrypt(pass)}
-
-				err = InsertDocument(client, dbName, collectionName, user)
-				if err != nil {
-					fmt.Println("Error inserting document:", err)
-				} else {
-					fmt.Println("Document inserted successfully")
-				}
-				///////////////////////////////
-			} else if com == "get" {
-				var plat string
-				fmt.Println("Enter platform to retrieve:")
-				fmt.Scanln(&plat)
-				RetrieveByPlatform(plat, client, dbName, collectionName)
-				//////////////////////////////////
-			} else if com == "getAll" {
-				PrintAllRecords(client, dbName, collectionName)
-			} else if com == "ex" {
-				break
-				//////////////////////////////
-			} else if com == "del" {
-				var plat string
-				fmt.Println("Enter platform to delete:")
-				fmt.Scanln(&plat)
-				DeleteByPlatform(plat, client, dbName, collectionName)
-				//////////////////////////7
-			} else {
-				fmt.Println("Invalid operation ", com)
-			}
-		}
-	} else {
-		fmt.Println("Invalid key")
-	}
-
-}
-
-func GenPassword(len int) string {
-	characters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
-
-	password := make([]byte, len)
-	charLen := 92
-	for i := range password {
-		password[i] = characters[rand.Intn(charLen)]
-	}
-	secure_password := string(password)
-	fmt.Printf(" secure pass: " + secure_password)
-
-	return secure_password
 }

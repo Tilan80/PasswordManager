@@ -1,4 +1,4 @@
-package main
+package pm
 
 import (
 	"context"
@@ -9,9 +9,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectToMongoDB(uri string) (*mongo.Client, error) {
+type User struct {
+	ID       string `bson:"_id,omitempty"`
+	Platform string `bson:"platform"`
+	Username string `bson:"username"`
+	Password string `bson:"password"`
+}
+
+type App struct{}
+
+func ConnectToMongoDB(ctx context.Context) (*mongo.Client, error) {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI("mongodb://localhost:27017").SetServerAPIOptions(serverAPI)
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
 		return nil, err
@@ -19,8 +28,8 @@ func ConnectToMongoDB(uri string) (*mongo.Client, error) {
 	return client, nil
 }
 
-func InsertDocument(client *mongo.Client, dbName, collectionName string, user User) error {
-	collection := client.Database(dbName).Collection(collectionName)
+func InsertDocument(client *mongo.Client, user User) error {
+	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	opts := options.InsertOne().SetBypassDocumentValidation(true)
 
@@ -28,11 +37,11 @@ func InsertDocument(client *mongo.Client, dbName, collectionName string, user Us
 	return err
 }
 
-func CheckKey(enteredKey string, client *mongo.Client, dbName, keyCollectionName string) bool {
-	keyCollection := client.Database(dbName).Collection(keyCollectionName)
+func CheckKey(app *App, enteredKey string, client *mongo.Client) bool {
+	keyCollection := client.Database("PasswordManager").Collection("Key")
 
 	// Assuming the key is stored as a plain string in the "password" field
-	filter := bson.M{"password": enteredKey}
+	filter := bson.M{"password": DerivePassword(enteredKey)}
 
 	// Use CountDocuments to check if a document with the entered key exists
 	count, err := keyCollection.CountDocuments(context.TODO(), filter)
@@ -45,8 +54,8 @@ func CheckKey(enteredKey string, client *mongo.Client, dbName, keyCollectionName
 	return count > 0
 }
 
-func RetrieveByPlatform(platform string, client *mongo.Client, dbName, collectionName string) {
-	collection := client.Database(dbName).Collection(collectionName)
+func RetrieveByPlatform(platform string, client *mongo.Client) {
+	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	filter := bson.M{"platform": platform}
 
@@ -60,8 +69,8 @@ func RetrieveByPlatform(platform string, client *mongo.Client, dbName, collectio
 	fmt.Printf("Platform: %s\nUsername: %s\nPassword: %s\n", result.Platform, result.Username, Decrypt(result.Password))
 }
 
-func DeleteByPlatform(platform string, client *mongo.Client, dbName, collectionName string) {
-	collection := client.Database(dbName).Collection(collectionName)
+func DeleteByPlatform(platform string, client *mongo.Client) {
+	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	filter := bson.M{"platform": platform}
 
@@ -79,8 +88,8 @@ func DeleteByPlatform(platform string, client *mongo.Client, dbName, collectionN
 	fmt.Printf("Deleted %d document(s) for platform %s\n", result.DeletedCount, platform)
 }
 
-func PrintAllRecords(client *mongo.Client, dbName, collectionName string) {
-	collection := client.Database(dbName).Collection(collectionName)
+func PrintAllRecords(client *mongo.Client) {
+	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	// Retrieve all documents in the collection
 	cursor, err := collection.Find(context.TODO(), bson.D{})
