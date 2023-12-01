@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	mongoClient *mongo.Client
+	mongoClient = new(mongo.Client)
 )
 
 // App struct
@@ -33,14 +33,9 @@ func (a *App) startup(ctx context.Context) {
 	mongoClient = mongo
 }
 
-// Expose the MongoDB client
-func (a *App) GetMongoClient() (*mongo.Client, error) {
-	return mongoClient, nil
-}
-
 // Expose the CheckKey function
 func (a *App) CheckKey(key string) bool {
-	return pm.CheckKey(&pm.App{}, key, mongoClient)
+	return pm.CheckKey(key, mongoClient)
 }
 
 // Expose a struct containing functions to be called from the frontend

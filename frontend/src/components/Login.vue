@@ -1,6 +1,6 @@
 <script setup>
-import { reactive } from 'vue'
-import { CheckKey } from "../../wailsjs/go/main/App"
+import {reactive} from 'vue'
+import {CheckKey} from '../../wailsjs/go/main/App'
 
 
 const data = reactive({
@@ -8,18 +8,13 @@ const data = reactive({
   resultText: "Please enter the password:",
 })
 
-
-
-async function checkKey() {
-  try {
-    const result = CheckKey(data.name)
-    data.resultText = result ? 'Key is correct' : 'Invalid key'
-  } catch (error) {
-    console.error('Error calling CheckKey:', error)
-    data.resultText = 'Error calling CheckKey'
-  }
+function checkKey() {
+  console.log("Got to here")
+  CheckKey(data.name).then(result => {
+    console.log(result)
+    data.resultText = result ? "You are logged in!" : "You are not logged in!"
+  })
 }
-
 
 
 </script>

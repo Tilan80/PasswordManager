@@ -9,7 +9,3 @@ export function CheckKey(arg1) {
 export function GetFrontendFunctions() {
   return window['go']['main']['App']['GetFrontendFunctions']();
 }
-
-export function GetMongoClient() {
-  return window['go']['main']['App']['GetMongoClient']();
-}

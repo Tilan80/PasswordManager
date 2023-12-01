@@ -37,7 +37,7 @@ func InsertDocument(client *mongo.Client, user User) error {
 	return err
 }
 
-func CheckKey(app *App, enteredKey string, client *mongo.Client) bool {
+func CheckKey(enteredKey string, client *mongo.Client) bool {
 	keyCollection := client.Database("PasswordManager").Collection("Key")
 
 	// Assuming the key is stored as a plain string in the "password" field
@@ -49,7 +49,7 @@ func CheckKey(app *App, enteredKey string, client *mongo.Client) bool {
 		fmt.Println("Error checking key in MongoDB:", err)
 		return false
 	}
-
+	fmt.Println("Count:", count)
 	// If count is greater than 0, the key exists
 	return count > 0
 }
