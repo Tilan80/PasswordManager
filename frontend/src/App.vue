@@ -1,10 +1,12 @@
-<script setup>
-import Login from './components/Login.vue'
-</script>
-
 <template>
-  <Login/>
+  <router-view />
 </template>
+
+<script>
+export default {
+  name: 'App',
+};
+</script>
 
 <style>
 #logo {
@@ -17,5 +19,13 @@ import Login from './components/Login.vue'
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-origin: content-box;
+}
+.view {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }
 </style>

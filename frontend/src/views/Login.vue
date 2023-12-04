@@ -1,22 +1,25 @@
 <script setup>
+console.log("Login component loaded");
 import {reactive} from 'vue'
 import {CheckKey} from '../../wailsjs/go/main/App'
 
+console.log("Got to login")
 
 const data = reactive({
   name: "",
   resultText: "Please enter the password:",
 })
 
+
 function checkKey() {
   console.log("Got to here")
   CheckKey(data.name).then(result => {
     console.log(result)
-    data.resultText = result ? "You are logged in!" : "You are not logged in!"
+    if (result) {
+      data.resultText = "Correct, accessing page..."
+    } else {data.resultText = "Wrong password"}
   })
 }
-
-
 </script>
 
 <template>
