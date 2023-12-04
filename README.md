@@ -16,13 +16,11 @@ Most of the important and "should change" code is in the files:
   Frontend:
   1. `/frontend/src/components/Login.vue`
   2. `/frontend/src/App.vue`
+  3. `/frontend/src/router/index.js`
 
   Backend:
   1. `main.go`
   2. `app.go`
   3. `dbmanage.go`
 
-I am currently facing an issue connecting the backend and frontend, specifically in using backend functions in Vue. The problem is highlighted in the `/frontend/src/components/Login.vue` file. I am attempting to call the `CheckKey` function when a button is pressed.
-
-However, I encounter an error that states: "Cannot read properties of undefined" at the line where I'm calling the `CheckKey` function. The full error message is as follows:
-Login.vue:18 Error calling CheckKey: TypeError: Cannot read properties of undefined (reading 'main')
+I currently have an issue, where I started using vue router, but the router-view does not render correctlly or rather app.vue does not show anything.
