@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue-router": "^4.0.13",
+    "vuetify": "^3.4.6"
   },
   "devDependencies": {
+    "@mdi/font": "^7.3.67",
     "@vitejs/plugin-vue": "^3.0.3",
     "vite": "^3.0.7"
   }

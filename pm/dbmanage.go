@@ -54,7 +54,7 @@ func CheckKey(enteredKey string, client *mongo.Client) bool {
 	return count > 0
 }
 
-func RetrieveByPlatform(platform string, client *mongo.Client) {
+func RetrieveByPlatform(platform string, client *mongo.Client) []string {
 	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	filter := bson.M{"platform": platform}
@@ -63,10 +63,10 @@ func RetrieveByPlatform(platform string, client *mongo.Client) {
 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		fmt.Println("Error retrieving document:", err)
-		return
+		return nil
 	}
 
-	fmt.Printf("Platform: %s\nUsername: %s\nPassword: %s\n", result.Platform, result.Username, Decrypt(result.Password))
+	return []string{result.ID, result.Platform, result.Username, Decrypt(result.Password)}
 }
 
 func DeleteByPlatform(platform string, client *mongo.Client) {
@@ -88,18 +88,21 @@ func DeleteByPlatform(platform string, client *mongo.Client) {
 	fmt.Printf("Deleted %d document(s) for platform %s\n", result.DeletedCount, platform)
 }
 
-func PrintAllRecords(client *mongo.Client) {
+func PrintAllRecords(client *mongo.Client) [][]string {
 	collection := client.Database("PasswordManager").Collection("Passwords")
 
 	// Retrieve all documents in the collection
 	cursor, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		fmt.Println("Error retrieving documents:", err)
-		return
+		return nil
 	}
 	defer cursor.Close(context.TODO())
 
-	// Iterate through the documents and print platform, username, and password
+	// Initialize a slice to store the results
+	var results [][]string
+
+	// Iterate through the documents and append values to the results slice
 	for cursor.Next(context.TODO()) {
 		var user User
 		err := cursor.Decode(&user)
@@ -108,11 +111,20 @@ func PrintAllRecords(client *mongo.Client) {
 			continue
 		}
 
-		fmt.Printf("Platform: %s, Username: %s, Password: %s\n", user.Platform, user.Username, Decrypt(user.Password))
+		// Append values to the results slice
+		result := []string{
+			user.Platform,
+			user.Username,
+			Decrypt(user.Password),
+		}
+		results = append(results, result)
 	}
 
 	if err := cursor.Err(); err != nil {
 		fmt.Println("Cursor error:", err)
-		return
+		return nil
 	}
+
+	// Return the results slice
+	return results
 }

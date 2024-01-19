@@ -38,6 +38,32 @@ func (a *App) CheckKey(key string) bool {
 	return pm.CheckKey(key, mongoClient)
 }
 
+func (a *App) GetByPlat(plat string) []string {
+	return pm.RetrieveByPlatform(plat, mongoClient)
+}
+
+func (a *App) PrintAllRecords(plat string) [][]string {
+	return pm.PrintAllRecords(mongoClient)
+}
+
+func (a *App) InsertOwn(plat, us, pass string) error {
+	user := pm.User{Platform: plat, Username: us, Password: pm.Encrypt(pass)}
+	return pm.InsertDocument(mongoClient, user)
+}
+
+func (a *App) InsertDocument(plat, us string) error {
+	pass, err := pm.GenPassword(20)
+	if err != nil {
+		return err
+	}
+	user := pm.User{Platform: plat, Username: us, Password: pm.Encrypt(pass)}
+	return pm.InsertDocument(mongoClient, user)
+}
+
+func (a *App) DeleteByPlatform(plat string) {
+	pm.DeleteByPlatform(plat, mongoClient)
+}
+
 // Expose a struct containing functions to be called from the frontend
 func (a *App) GetFrontendFunctions() *FrontendFunctions {
 	return &FrontendFunctions{App: a}

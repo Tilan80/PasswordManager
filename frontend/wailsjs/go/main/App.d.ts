@@ -4,4 +4,14 @@ import {main} from '../models';
 
 export function CheckKey(arg1:string):Promise<boolean>;
 
+export function DeleteByPlatform(arg1:string):Promise<void>;
+
+export function GetByPlat(arg1:string):Promise<Array<string>>;
+
 export function GetFrontendFunctions():Promise<main.FrontendFunctions>;
+
+export function InsertDocument(arg1:string,arg2:string):Promise<void>;
+
+export function InsertOwn(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function PrintAllRecords(arg1:string):Promise<Array<any>>;

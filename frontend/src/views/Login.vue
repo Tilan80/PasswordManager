@@ -1,9 +1,8 @@
 <script setup>
-console.log("Login component loaded");
-import {reactive} from 'vue'
-import {CheckKey} from '../../wailsjs/go/main/App'
+import { reactive } from 'vue'
+import { CheckKey } from '../../wailsjs/go/main/App'
+import { router } from '../router';
 
-console.log("Got to login")
 
 const data = reactive({
   name: "",
@@ -12,32 +11,41 @@ const data = reactive({
 
 
 function checkKey() {
-  console.log("Got to here")
   CheckKey(data.name).then(result => {
     console.log(result)
     if (result) {
       data.resultText = "Correct, accessing page..."
-    } else {data.resultText = "Wrong password"}
+      router.push("/Home")
+    } else { data.resultText = "Wrong password" }
   })
 }
+
 </script>
 
 <template>
   <main>
     <img id="logo" alt="Wails logo" src="../assets/images/logo-universal.png" />
     <div id="result" class="result">{{ data.resultText }}</div>
-    <div id="input" class="input-box">
-      <input id="name" v-model="data.name" autocomplete="off" class="input" type="text" />
-      <button class="btn" @click="checkKey">Login</button>
-    </div>
+    <v-row align="center" justify="center">
+      <v-col class="mx-auto" cols="12" md="4">
+        <v-text-field label="Password" v-model="data.name" autocomplete="off" type="password"></v-text-field>
+        <div class="d-flex align-center">
+          <v-btn class="mx-auto mt-6 bg-green-accent-1 font-weight-bold" size="x-large" rounded="xl" 
+          @click="checkKey">Login</v-btn>
+        </div>
+      </v-col>
+    </v-row>
+
   </main>
 </template>
+
 
 <style scoped>
 .result {
   height: 20px;
   line-height: 20px;
   margin: 1.5rem auto;
+  font-size: 24px;
 }
 
 .input-box .btn {

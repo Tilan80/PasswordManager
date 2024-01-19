@@ -6,6 +6,26 @@ export function CheckKey(arg1) {
   return window['go']['main']['App']['CheckKey'](arg1);
 }
 
+export function DeleteByPlatform(arg1) {
+  return window['go']['main']['App']['DeleteByPlatform'](arg1);
+}
+
+export function GetByPlat(arg1) {
+  return window['go']['main']['App']['GetByPlat'](arg1);
+}
+
 export function GetFrontendFunctions() {
   return window['go']['main']['App']['GetFrontendFunctions']();
+}
+
+export function InsertDocument(arg1, arg2) {
+  return window['go']['main']['App']['InsertDocument'](arg1, arg2);
+}
+
+export function InsertOwn(arg1, arg2, arg3) {
+  return window['go']['main']['App']['InsertOwn'](arg1, arg2, arg3);
+}
+
+export function PrintAllRecords(arg1) {
+  return window['go']['main']['App']['PrintAllRecords'](arg1);
 }
